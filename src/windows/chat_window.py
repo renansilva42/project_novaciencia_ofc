@@ -9,6 +9,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QSize, QTimer, pyqtSignal, QThread
 from PyQt6.QtGui import QIcon, QAction
 
+from loguru import logger
+
 from src.utils.supabase_client import SupabaseClient
 from src.components.message_bubble import MessageBubble
 from src.components.typing_indicator import TypingIndicator
@@ -31,19 +33,23 @@ class ChatWorker(QThread):
     def run(self):
         """Process the message and emit the response."""
         try:
+            logger.debug(f"ChatWorker started processing message for user_id={self.user_id}: {self.user_message}")
             self.typing_started.emit()
             response = self.openai_handler.process_message(self.user_id, self.user_message)
             self.typing_stopped.emit()
             self.message_received.emit(response)
+            logger.debug(f"ChatWorker finished processing message for user_id={self.user_id}")
         except Exception as e:
             self.typing_stopped.emit()
             self.message_received.emit(f"Error: {str(e)}")
+            logger.error(f"ChatWorker error for user_id={self.user_id}: {e}")
 
 class ChatWindow(QMainWindow):
     """Main chat window for the application."""
     
     def __init__(self, user):
         super().__init__()
+        logger.info(f"Initializing ChatWindow for user: {user.email} (id={user.id})")
         self.user = user
         self.supabase = SupabaseClient()
         self.openai_handler = OpenAIHandler()
@@ -179,6 +185,7 @@ class ChatWindow(QMainWindow):
     def load_chat_history(self):
         """Load chat history from the database."""
         messages = self.chat_history.get_messages()
+        logger.info(f"Loaded {len(messages)} messages from chat history for user_id={self.user.id}")
         
         # Clear existing messages except welcome message
         for i in reversed(range(self.messages_layout.count() - 2)):  # -2 to keep typing indicator and stretch
@@ -205,6 +212,8 @@ class ChatWindow(QMainWindow):
         if not message_text:
             return
             
+        logger.info(f"User {self.user.id} sent message: {message_text}")
+        
         # Clear input field
         self.message_input.clear()
         
@@ -228,6 +237,8 @@ class ChatWindow(QMainWindow):
         
     def handle_response(self, response):
         """Handle the response from the AI."""
+        logger.info(f"Received response for user {self.user.id}: {response}")
+        
         # Add assistant message to UI
         timestamp = datetime.now()
         assistant_bubble = MessageBubble(response, "assistant", timestamp)
@@ -276,6 +287,7 @@ class ChatWindow(QMainWindow):
         
     def sign_out(self):
         """Sign out the user and return to login screen."""
+        logger.info(f"User {self.user.id} signing out")
         self.supabase.sign_out()
         
         # Import here to avoid circular imports
