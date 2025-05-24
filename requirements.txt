@@ -1,0 +1,7 @@
+Flask
+python-dotenv
+PyQt6
+requests
+supabase
+openai
+openai-agents

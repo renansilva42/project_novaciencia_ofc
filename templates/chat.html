@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Assistant - Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatForm = document.getElementById('chatForm');
+            const messageInput = document.getElementById('message');
+            const messagesContainer = document.querySelector('.messages');
+
+            function scrollToBottom() {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Scroll to bottom on page load
+            scrollToBottom();
+
+            async function sendMessage(messageText) {
+                // Append user message immediately
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.classList.add('message', 'user');
+                userMessageDiv.innerHTML = `
+                    <div class="message-content"></div>
+                    <div class="message-timestamp"></div>
+                `;
+                userMessageDiv.querySelector('.message-content').textContent = messageText;
+                const now = new Date();
+                userMessageDiv.querySelector('.message-timestamp').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                messagesContainer.appendChild(userMessageDiv);
+                scrollToBottom();
+
+                // Send message to API
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: messageText })
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.statusText}`);
+                    }
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    // Append assistant message
+                    const assistantMessageDiv = document.createElement('div');
+                    assistantMessageDiv.classList.add('message', 'assistant');
+                    assistantMessageDiv.innerHTML = `
+                        <div class="message-content"></div>
+                        <div class="message-timestamp"></div>
+                    `;
+                    assistantMessageDiv.querySelector('.message-content').textContent = data.response;
+                    const nowAssistant = new Date();
+                    assistantMessageDiv.querySelector('.message-timestamp').textContent = nowAssistant.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                    messagesContainer.appendChild(assistantMessageDiv);
+                    scrollToBottom();
+                } catch (error) {
+                    console.error('Chat error:', error);
+                    alert('Failed to send message. Please try again.');
+                }
+            }
+
+            chatForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const messageText = messageInput.value.trim();
+                if (!messageText) return;
+
+                // Clear input
+                messageInput.value = '';
+                messageInput.focus();
+
+                sendMessage(messageText);
+            });
+
+            // Fix input text disappearing issue by disabling autocomplete and spellcheck
+            messageInput.setAttribute('autocomplete', 'off');
+            messageInput.setAttribute('spellcheck', 'false');
+        });
+    </script>
+</head>
+<body>
+    <div class="chat-container" role="main" aria-label="Chat interface">
+        <header>
+            <h1>AI Assistant</h1>
+            <div class="user-info" aria-live="polite">
+                Signed in as {{ user.email }} | <a href="{{ url_for('logout') }}">Sign Out</a>
+            </div>
+        </header>
+        <main class="messages" aria-live="polite" aria-relevant="additions">
+            {% for message in messages %}
+                <div class="message {{ message.role }}">
+                    <div class="message-content">{{ message.content }}</div>
+                    <div class="message-timestamp">{{ message.timestamp }}</div>
+                </div>
+            {% endfor %}
+        </main>
+        <form id="chatForm" method="post" action="{{ url_for('chat') }}" aria-label="Send a message">
+            <input type="text" id="message" name="message" placeholder="Type your message here..." aria-required="true" />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+<style>
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .chat-container {
+            max-width: 100%;
+            margin: 20px 10px;
+            padding: 20px;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .messages {
+            height: 300px;
+            padding: 10px;
+        }
+        form#chatForm {
+            flex-direction: column;
+        }
+        form#chatForm input[type="text"] {
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-bottom: 10px;
+        }
+        form#chatForm button {
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            width: 100%;
+            padding: 12px 0;
+        }
+    }
+</style>
+</body>
+</html>

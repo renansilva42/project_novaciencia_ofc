@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Assistant - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+    <div class="login-container" role="main" aria-label="Login form">
+        <h1>AI Assistant</h1>
+          {% if messages %}
+            <ul class="flashes" aria-live="polite">
+              {% for category, message in messages %}
+                <li class="flash {{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        <form method="post" action="{{ url_for('login') }}" aria-label="Login form">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email" aria-required="true" />
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password" aria-required="true" />
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
