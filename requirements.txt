@@ -6,3 +6,4 @@ supabase
 openai
 openai-agents
 loguru
+gunicorn
