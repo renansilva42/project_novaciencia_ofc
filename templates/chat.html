@@ -16,7 +16,7 @@
                     <i class="fas fa-robot"></i>
                 </div>
                 <div class="header-info">
-                    <h1>AI Assistant</h1>
+                    <h1>Suporte ao Cliente Nova Ciência</h1>
                     <div class="status" aria-live="polite" aria-atomic="true">
                         <div class="status-dot"></div>
                         <span>Online</span>
@@ -24,10 +24,10 @@
                 </div>
             </div>
             <div class="user-menu">
-                <div class="user-info">Signed in as {{ user.email }}</div>
+                <div class="user-info">Logado como {{ user.email }}</div>
                 <a href="{{ url_for('logout') }}" class="logout-btn" aria-label="Sign Out">
                     <i class="fas fa-sign-out-alt"></i>
-                    Sign Out
+                    Sair
                 </a>
             </div>
         </header>
@@ -85,7 +85,7 @@
                         id="messageInput" 
                         name="message" 
                         class="message-input" 
-                        placeholder="Type your message here..." 
+                        placeholder="Digite sua mensagem aqui..." 
                         aria-required="true"
                         rows="1"
                         autocomplete="off"
