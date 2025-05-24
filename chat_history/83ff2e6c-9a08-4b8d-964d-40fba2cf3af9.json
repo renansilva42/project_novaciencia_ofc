@@ -159,6 +159,16 @@
       "role": "assistant",
       "content": "Para realizar a Curva de Controle com a Caneta Aur\u00edmetro no ProSync, siga os seguintes passos:\n\n1. Segure o aur\u00edmetro de forma leve, apoiando-o suavemente na m\u00e3o, sem pressionar.\n2. Posicione-se no campo energ\u00e9tico do paciente.\n3. Clique no bot\u00e3o \"Neutro\" no equipamento.\n4. Ap\u00f3s a leitura, clique no bot\u00e3o \"R\" (Resposta).\n5. A mensagem \"Curva Controle Ajustada\" ser\u00e1 exibida.\n6. Clique em \"OK\" para confirmar e seguir com os testes.\n\nImportante: mantenha o pressionamento dos bot\u00f5es por pelo menos dois segundos para garantir que o comando seja reconhecido corretamente.",
       "timestamp": "2025-05-24T16:18:25.527842"
+    },
+    {
+      "role": "user",
+      "content": "obrigado",
+      "timestamp": "2025-05-24T16:45:39.882081"
+    },
+    {
+      "role": "assistant",
+      "content": "De nada! Se precisar de alguma ajuda ou tiver alguma d\u00favida, \u00e9 s\u00f3 me chamar. Estou aqui para ajudar!",
+      "timestamp": "2025-05-24T16:45:42.203375"
     }
   ]
 }

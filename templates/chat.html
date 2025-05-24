@@ -60,7 +60,7 @@
                     </div>
                     <div class="message-content-wrapper">
                         <div class="message-bubble">{{ message.content }}</div>
-                        <div class="message-timestamp">{{ message.timestamp }}</div>
+                        <div class="message-timestamp" data-timestamp="{{ message.timestamp }}">{{ message.timestamp }}</div>
                     </div>
                 </div>
             {% endfor %}
@@ -102,6 +102,39 @@
     </div>
 
     <script>
+        function formatTimestamp(date) {
+            const optionsTime = { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+            const optionsDate = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Sao_Paulo' };
+            const now = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+            const dt = new Date(date.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+            const diffTime = now - dt;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            let dayLabel = '';
+            if (diffDays === 0) {
+                dayLabel = 'Hoje';
+            } else if (diffDays === 1) {
+                dayLabel = 'Ontem';
+            } else {
+                dayLabel = dt.toLocaleDateString('pt-BR', optionsDate);
+            }
+
+            return dt.toLocaleTimeString('pt-BR', optionsTime) + ' - ' + dayLabel;
+        }
+
+        function updateAllTimestamps() {
+            const timestampElements = document.querySelectorAll('.message-timestamp[data-timestamp]');
+            timestampElements.forEach(el => {
+                const ts = el.getAttribute('data-timestamp');
+                if (ts) {
+                    const date = new Date(ts);
+                    if (!isNaN(date)) {
+                        el.textContent = formatTimestamp(date);
+                    }
+                }
+            });
+        }
+
         class ChatInterface {
             constructor() {
                 this.messagesContainer = document.querySelector('.messages-container');
@@ -118,6 +151,7 @@
                 this.setupEventListeners();
                 this.setupTextareaAutoResize();
                 this.scrollToBottomOnLoad();
+                updateAllTimestamps();
             }
 
             setupEventListeners() {
@@ -218,7 +252,7 @@
                             ${content}
                         </div>
                         <div class="message-timestamp">
-                            ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            ${formatTimestamp(new Date())}
                         </div>
                     </div>
                 `;
