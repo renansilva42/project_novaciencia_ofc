@@ -129,6 +129,36 @@
       "role": "assistant",
       "content": "Em casos de sobrecarga hep\u00e1tica ou problemas relacionados ao f\u00edgado ao usar o RPD, \u00e9 importante realizar uma desintoxica\u00e7\u00e3o eficaz. Isso pode ser feito utilizando equipamentos que agem diretamente sobre o f\u00edgado, al\u00e9m de tratamentos complementares, como o uso de ze\u00f3lita ou produtos espec\u00edficos para auxiliar as fun\u00e7\u00f5es hep\u00e1ticas. \u00c9 crucial monitorar o estado do paciente durante o tratamento para evitar a sobrecarga do f\u00edgado.",
       "timestamp": "2025-05-24T15:13:13.189478"
+    },
+    {
+      "role": "user",
+      "content": "oi",
+      "timestamp": "2025-05-24T16:15:58.031197"
+    },
+    {
+      "role": "assistant",
+      "content": "Ol\u00e1! Como posso ajudar voc\u00ea hoje?",
+      "timestamp": "2025-05-24T16:15:59.854333"
+    },
+    {
+      "role": "user",
+      "content": "qual a rela\u00e7\u00e3o entre o Inib e Desintoxica\u00e7\u00e3o?",
+      "timestamp": "2025-05-24T16:16:24.586164"
+    },
+    {
+      "role": "assistant",
+      "content": "O aparelho Hidrovit\u00e1llis Ilib, ao realizar a t\u00e9cnica de Irradia\u00e7\u00e3o Intravascular do Sangue com Laser (ILIB), pode ter um efeito positivo na desintoxica\u00e7\u00e3o do organismo. \n\nA t\u00e9cnica ILIB, que envolve a aplica\u00e7\u00e3o de laser de baixa intensidade, pode melhorar a circula\u00e7\u00e3o sangu\u00ednea e aumentar a capacidade do corpo de eliminar toxinas. Essa estimula\u00e7\u00e3o pela luz laser pode potencializar a atividade metab\u00f3lica celular, otimizar a fun\u00e7\u00e3o hep\u00e1tica e renal, e, portanto, auxiliar nos processos naturais de desintoxica\u00e7\u00e3o do corpo. Isso promove um melhor equil\u00edbrio e funcionamento do sistema imunol\u00f3gico, contribuindo para a elimina\u00e7\u00e3o de subst\u00e2ncias t\u00f3xicas e de res\u00edduos metab\u00f3licos do organismo.",
+      "timestamp": "2025-05-24T16:16:31.513438"
+    },
+    {
+      "role": "user",
+      "content": "e sobre o ProSync, como deve ser feita a Realiza\u00e7\u00e3o da Curva de Controle com a Caneta Aur\u00edmetro?",
+      "timestamp": "2025-05-24T16:18:18.765575"
+    },
+    {
+      "role": "assistant",
+      "content": "Para realizar a Curva de Controle com a Caneta Aur\u00edmetro no ProSync, siga os seguintes passos:\n\n1. Segure o aur\u00edmetro de forma leve, apoiando-o suavemente na m\u00e3o, sem pressionar.\n2. Posicione-se no campo energ\u00e9tico do paciente.\n3. Clique no bot\u00e3o \"Neutro\" no equipamento.\n4. Ap\u00f3s a leitura, clique no bot\u00e3o \"R\" (Resposta).\n5. A mensagem \"Curva Controle Ajustada\" ser\u00e1 exibida.\n6. Clique em \"OK\" para confirmar e seguir com os testes.\n\nImportante: mantenha o pressionamento dos bot\u00f5es por pelo menos dois segundos para garantir que o comando seja reconhecido corretamente.",
+      "timestamp": "2025-05-24T16:18:25.527842"
     }
   ]
 }

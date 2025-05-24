@@ -3,38 +3,182 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AI Assistant - Chat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatForm = document.getElementById('chatForm');
-            const messageInput = document.getElementById('message');
-            const messagesContainer = document.querySelector('.messages');
+    <title>AI Assistant - Chat Example</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat_styles.css') }}" />
+</head>
+<body>
+    <div class="chat-container" role="main" aria-label="Chat interface">
+        <header class="chat-header">
+            <div class="header-left">
+                <div class="ai-avatar" aria-hidden="true">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="header-info">
+                    <h1>AI Assistant</h1>
+                    <div class="status" aria-live="polite" aria-atomic="true">
+                        <div class="status-dot"></div>
+                        <span>Online</span>
+                    </div>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">Signed in as {{ user.email }}</div>
+                <a href="{{ url_for('logout') }}" class="logout-btn" aria-label="Sign Out">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sign Out
+                </a>
+            </div>
+        </header>
 
-            function scrollToBottom() {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        <main class="messages-container" aria-live="polite" aria-relevant="additions">
+            {% if messages|length == 0 %}
+            <div class="empty-state" role="region" aria-label="Empty chat state">
+                <div class="empty-state-icon" aria-hidden="true">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Start a conversation</h3>
+                <p>Ask me anything! I'm here to help with questions, creative tasks, analysis, and more.</p>
+                <div class="suggestions" role="list">
+                    <div class="suggestion" role="listitem" tabindex="0" onclick="sendSuggestion('What can you help me with?')">What can you help me with?</div>
+                    <div class="suggestion" role="listitem" tabindex="0" onclick="sendSuggestion('Explain quantum computing')">Explain quantum computing</div>
+                    <div class="suggestion" role="listitem" tabindex="0" onclick="sendSuggestion('Write a creative story')">Write a creative story</div>
+                    <div class="suggestion" role="listitem" tabindex="0" onclick="sendSuggestion('Help me plan my day')">Help me plan my day</div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% for message in messages %}
+                <div class="message {{ message.role }}">
+                    <div class="message-avatar" aria-hidden="true">
+                        {% if message.role == 'user' %}
+                            <i class="fas fa-user"></i>
+                        {% else %}
+                            <i class="fas fa-robot"></i>
+                        {% endif %}
+                    </div>
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble">{{ message.content }}</div>
+                        <div class="message-timestamp">{{ message.timestamp }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="typing-indicator" aria-live="polite" aria-atomic="true" aria-label="AI is typing" style="display:none;">
+                <div class="message-avatar" aria-hidden="true">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-dots" aria-hidden="true">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <span style="color: var(--text-muted); font-size: 0.875rem;">AI is typing...</span>
+            </div>
+        </main>
+
+        <div class="input-container">
+            <form class="input-form" id="chatForm" aria-label="Send a message" method="post" action="{{ url_for('chat') }}">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        name="message" 
+                        class="message-input" 
+                        placeholder="Type your message here..." 
+                        aria-required="true"
+                        rows="1"
+                        autocomplete="off"
+                        spellcheck="false"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button type="submit" class="send-button" id="sendButton" aria-label="Send message" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class ChatInterface {
+            constructor() {
+                this.messagesContainer = document.querySelector('.messages-container');
+                this.messageInput = document.getElementById('messageInput');
+                this.chatForm = document.getElementById('chatForm');
+                this.sendButton = document.getElementById('sendButton');
+                this.typingIndicator = document.querySelector('.typing-indicator');
+                this.emptyState = document.querySelector('.empty-state');
+
+                this.init();
             }
 
-            // Scroll to bottom on page load
-            scrollToBottom();
+            init() {
+                this.setupEventListeners();
+                this.setupTextareaAutoResize();
+                this.scrollToBottomOnLoad();
+            }
 
-            async function sendMessage(messageText) {
-                // Append user message immediately
-                const userMessageDiv = document.createElement('div');
-                userMessageDiv.classList.add('message', 'user');
-                userMessageDiv.innerHTML = `
-                    <div class="message-content"></div>
-                    <div class="message-timestamp"></div>
-                `;
-                userMessageDiv.querySelector('.message-content').textContent = messageText;
-                const now = new Date();
-                userMessageDiv.querySelector('.message-timestamp').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            setupEventListeners() {
+                this.chatForm.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.messageInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                this.messageInput.addEventListener('input', () => this.updateSendButton());
+            }
 
-                messagesContainer.appendChild(userMessageDiv);
-                scrollToBottom();
+            setupTextareaAutoResize() {
+                this.messageInput.addEventListener('input', () => {
+                    this.messageInput.style.height = 'auto';
+                    this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
+                });
+            }
 
-                // Send message to API
+            scrollToBottomOnLoad() {
+                // Scroll to the bottom when the page loads
+                requestAnimationFrame(() => {
+                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+                });
+            }
+
+            handleKeyDown(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.handleSubmit(e);
+                }
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+
+                this.sendMessage(message);
+            }
+
+            updateSendButton() {
+                const hasText = this.messageInput.value.trim().length > 0;
+                this.sendButton.disabled = !hasText;
+            }
+
+            async sendMessage(messageText) {
+                // Hide empty state
+                if (this.emptyState) {
+                    this.emptyState.style.display = 'none';
+                }
+
+                // Add user message
+                this.addMessage(messageText, 'user');
+                
+                // Clear input
+                this.messageInput.value = '';
+                this.messageInput.style.height = 'auto';
+                this.updateSendButton();
+
+                // Show typing indicator
+                this.showTypingIndicator();
+
                 try {
+                    // Send message to backend API
                     const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: {
@@ -42,98 +186,81 @@
                         },
                         body: JSON.stringify({ message: messageText })
                     });
+
                     if (!response.ok) {
-                        throw new Error(`Error: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
+
                     const data = await response.json();
                     if (data.error) {
                         throw new Error(data.error);
                     }
-                    // Append assistant message
-                    const assistantMessageDiv = document.createElement('div');
-                    assistantMessageDiv.classList.add('message', 'assistant');
-                    assistantMessageDiv.innerHTML = `
-                        <div class="message-content"></div>
-                        <div class="message-timestamp"></div>
-                    `;
-                    assistantMessageDiv.querySelector('.message-content').textContent = data.response;
-                    const nowAssistant = new Date();
-                    assistantMessageDiv.querySelector('.message-timestamp').textContent = nowAssistant.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-                    messagesContainer.appendChild(assistantMessageDiv);
-                    scrollToBottom();
+                    // Add assistant response
+                    this.addMessage(data.response, 'assistant');
                 } catch (error) {
                     console.error('Chat error:', error);
-                    alert('Failed to send message. Please try again.');
+                    this.addMessage('Sorry, I encountered an error. Please try again.', 'assistant', true);
+                } finally {
+                    this.hideTypingIndicator();
                 }
             }
 
-            chatForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const messageText = messageInput.value.trim();
-                if (!messageText) return;
+            addMessage(content, role, isError = false) {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${role}`;
+                messageElement.innerHTML = `
+                    <div class="message-avatar">
+                        ${role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>'}
+                    </div>
+                    <div class="message-content-wrapper">
+                        <div class="message-bubble ${isError ? 'error' : ''}">
+                            ${content}
+                        </div>
+                        <div class="message-timestamp">
+                            ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </div>
+                    </div>
+                `;
 
-                // Clear input
-                messageInput.value = '';
-                messageInput.focus();
+                // Insert before typing indicator if it exists
+                const typingIndicator = this.messagesContainer.querySelector('.typing-indicator');
+                if (typingIndicator) {
+                    this.messagesContainer.insertBefore(messageElement, typingIndicator);
+                } else {
+                    this.messagesContainer.appendChild(messageElement);
+                }
 
-                sendMessage(messageText);
-            });
+                this.scrollToBottom();
+            }
 
-            // Fix input text disappearing issue by disabling autocomplete and spellcheck
-            messageInput.setAttribute('autocomplete', 'off');
-            messageInput.setAttribute('spellcheck', 'false');
+            showTypingIndicator() {
+                this.typingIndicator.style.display = 'flex';
+                this.scrollToBottom();
+            }
+
+            hideTypingIndicator() {
+                this.typingIndicator.style.display = 'none';
+            }
+
+            scrollToBottom() {
+                requestAnimationFrame(() => {
+                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+                });
+            }
+        }
+
+        // Global function for suggestion clicks
+        function sendSuggestion(text) {
+            const chat = new ChatInterface();
+            chat.messageInput.value = text;
+            chat.sendMessage(text);
+        }
+
+        // Initialize chat when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatInterface();
         });
     </script>
-</head>
-<body>
-    <div class="chat-container" role="main" aria-label="Chat interface">
-        <header>
-            <h1>AI Assistant</h1>
-            <div class="user-info" aria-live="polite">
-                Signed in as {{ user.email }} | <a href="{{ url_for('logout') }}">Sign Out</a>
-            </div>
-        </header>
-        <main class="messages" aria-live="polite" aria-relevant="additions">
-            {% for message in messages %}
-                <div class="message {{ message.role }}">
-                    <div class="message-content">{{ message.content }}</div>
-                    <div class="message-timestamp">{{ message.timestamp }}</div>
-                </div>
-            {% endfor %}
-        </main>
-        <form id="chatForm" method="post" action="{{ url_for('chat') }}" aria-label="Send a message">
-            <input type="text" id="message" name="message" placeholder="Type your message here..." aria-required="true" />
-            <button type="submit">Send</button>
-        </form>
-    </div>
-<style>
-    /* Responsive adjustments */
-    @media (max-width: 600px) {
-        .chat-container {
-            max-width: 100%;
-            margin: 20px 10px;
-            padding: 20px;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        .messages {
-            height: 300px;
-            padding: 10px;
-        }
-        form#chatForm {
-            flex-direction: column;
-        }
-        form#chatForm input[type="text"] {
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            margin-bottom: 10px;
-        }
-        form#chatForm button {
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            width: 100%;
-            padding: 12px 0;
-        }
-    }
-</style>
 </body>
 </html>
