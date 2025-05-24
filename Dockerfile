@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy requirements and install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Copy the rest of the application code
 COPY . .
@@ -18,5 +18,5 @@ EXPOSE 5000
 ENV FLASK_APP=main.py
 ENV FLASK_RUN_HOST=0.0.0.0
 
-# Run the Flask app
-CMD ["python", "main.py"]
+# Run the Flask app with Gunicorn for production
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
