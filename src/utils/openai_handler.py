@@ -29,6 +29,17 @@ class OpenAIHandler:
                 ),
             ],
         )
+        
+        self.especialista_uzzaper = Agent(
+            name="especialista_uzzaper",
+            instructions="""Você é um especialista no aparelho terapêutico Uzzaper. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_6830883c2cdc8191a069a7e015fb3746"],
+                ),
+            ],
+        )
 
         self.especialista_neurospa = Agent(
             name="especialista_neurospa",
