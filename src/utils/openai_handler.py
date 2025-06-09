@@ -228,6 +228,14 @@ Elétrica Craniana). Nunca informe ao usuário que as informações que você fo
             - PC Zapper → encaminhe para especialista_bomba
             - Potentizer → encaminhe para especialista_anestesia
             - Hidrovitális Master → encaminhe para especialista_dialise
+            - uZapper → encaminhe para especialista_uzzaper
+            - Accufinder → encaminhe para especialista_accufinder
+            - Acquavit → encaminhe para especialista_acquavit
+            - Brain Machine → encaminhe para especialista_brain_machine
+            - Color Gen → encaminhe para especialista_colorgen
+            - Emissor Morfico → encaminhe para especialista_emissor_morfico
+            - Atuaizar Hidrovitalis ou PcZapper → encaminhe para especialista_atualizar_hidrovitallis_pczapper
+            - CES → encaminhe para especialista_ces
             
             Se o equipamento não for claro ou a pergunta for genérica, peça mais detalhes antes de encaminhar.
             Seja amigável e profissional em todas as interações.""",
@@ -240,7 +248,15 @@ Elétrica Craniana). Nunca informe ao usuário que as informações que você fo
                 self.especialista_prosync, 
                 self.especialista_potentizer, 
                 self.especialista_pczapper,
-                self.especialista_hidrovitalis_master
+                self.especialista_hidrovitalis_master,
+                self.especialista_uzzaper,
+                self.especialista_accufinder,
+                self.especialista_acquavit,
+                self.especialista_brain_machine,
+                self.especialista_colorgen,
+                self.especialista_emissor_morfico,
+                self.especialista_atualizar_hidrovitallis_pczapper,
+                self.especialista_ces
             ],
         )
         
