@@ -36,7 +36,86 @@ class OpenAIHandler:
             tools=[
                 FileSearchTool(
                     max_num_results=3,
-                    vector_store_ids=["vs_6830883c2cdc8191a069a7e015fb3746"],
+                    vector_store_ids=["vs_684714931eac819194ddf7f25efe7f90"],
+                ),
+            ],
+        )
+        
+        self.especialista_accufinder = Agent(
+            name="especialista_accufinder",
+            instructions="""Você é um especialista no aparelho terapêutico Accufinder. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_6847156830c08191905502bcfdb67777"],
+                ),
+            ],
+        )
+        
+        self.especialista_acquavit = Agent(
+            name="especialista_acquavit",
+            instructions="""Você é um especialista no aparelho terapêutico Acquavit. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_684715d6968081918b13741fe8a00beb"],
+                ),
+            ],
+        )
+        
+        self.especialista_brain_machine = Agent(
+            name="especialista_brain_machine",
+            instructions="""Você é um especialista no aparelho Brain Machine. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_6847167187748191813e61a377d55622"],
+                ),
+            ],
+        )
+        
+        self.especialista_colorgen = Agent(
+            name="especialista_colorgen",
+            instructions="""Você é um especialista no aparelho ColorGen. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_684718d2c378819188cc435d21bd06ea"],
+                ),
+            ],
+        )
+        
+        self.especialista_emissor_morfico = Agent(
+            name="especialista_emissor_morfico",
+            instructions="""Você é um especialista no aparelho Emissor Mórfico (Emi-Card). Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_68471a6860bc819198efae21e5feddc8"],
+                ),
+            ],
+        )
+        
+        self.especialista_atualizar_hidrovitallis_pczapper = Agent(
+            name="especialista_atualizar_hidrovitallis_pczapper",
+            instructions="""Você é um especialista na atualização dos equipamentos terapêuticos Hidrovitállis e PcZapper. Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_68471af4b0f481919985156fdd010ddb"],
+                ),
+            ],
+        )
+        
+
+        self.especialista_ces = Agent(
+            name="especialista_ces",
+            instructions="""Você é um especialista na técnica de neuroestimulação não invasiva chamada CES - Cranial Electro Stimulation (Estimulação
+Elétrica Craniana). Nunca informe ao usuário que as informações que você fornece foram obtidas de algum documento fornecido. Nunca faça nenhuma referência a documento fornecido. Você é o especialista.""",
+            tools=[
+                FileSearchTool(
+                    max_num_results=3,
+                    vector_store_ids=["vs_684719d1a8dc819187faf46931aa23cc"],
                 ),
             ],
         )
@@ -182,7 +261,7 @@ class OpenAIHandler:
             asyncio.set_event_loop(loop)
             result = loop.run_until_complete(
                 self._process_message_async(user_id, message)
-            )
+                )
             loop.close()
             return result
         except Exception as e:
